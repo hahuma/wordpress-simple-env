@@ -8,3 +8,10 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copy and install Plugins automatically 
+COPY all-in-one-wp-migration.zip /usr/src/wordpress/wp-content/plugins/
+COPY all-in-one-wp-migration-unlimited-extension.zip /usr/src/wordpress/wp-content/plugins/
+
+RUN wp plugin install /usr/src/wordpress/wp-content/plugins/all-in-one-wp-migration.zip --allow-root --activate
+RUN wp plugin install /usr/src/wordpress/wp-content/plugins/all-in-one-wp-migration-unlimited-extension.zip --allow-root --activate
