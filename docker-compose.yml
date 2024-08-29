@@ -1,0 +1,31 @@
+services:
+   db:
+     image: mysql:8.0
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     ports:
+      - "3307:3306"
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   web:
+     depends_on:
+       - db
+     build: .
+     ports:
+       - "8000:80"
+     restart: always
+     volumes:
+      - './public/:/var/www/html'
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+       WORDPRESS_DB_NAME: wordpress
+volumes:
+    db_data: {}
