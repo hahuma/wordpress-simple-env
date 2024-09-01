@@ -9,9 +9,14 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copy and install Plugins automatically 
-COPY all-in-one-wp-migration.zip /usr/src/wordpress/wp-content/plugins/
-COPY all-in-one-wp-migration-unlimited-extension.zip /usr/src/wordpress/wp-content/plugins/
+# Instalar cliente MySQL
+RUN apt-get update && apt-get install -y default-mysql-client
 
-RUN wp plugin install /usr/src/wordpress/wp-content/plugins/all-in-one-wp-migration.zip --allow-root --activate
-RUN wp plugin install /usr/src/wordpress/wp-content/plugins/all-in-one-wp-migration-unlimited-extension.zip --allow-root --activate
+# Copy plugin zip files to a temporary location
+COPY all-in-one-wp-migration.zip /tmp/
+COPY all-in-one-wp-migration-unlimited-extension.zip /tmp/
+
+# Add entrypoint to install plugins
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
